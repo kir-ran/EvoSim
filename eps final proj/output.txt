@@ -1,0 +1,176 @@
+Collecting data at step 0
+Advancing to step 1
+Collecting data at step 1
+Advancing to step 2
+Collecting data at step 2
+Advancing to step 3
+Collecting data at step 3
+Advancing to step 4
+Collecting data at step 4
+Advancing to step 5
+Collecting data at step 5
+Advancing to step 6
+Collecting data at step 6
+Advancing to step 7
+Collecting data at step 7
+Advancing to step 8
+Collecting data at step 8
+Advancing to step 9
+Collecting data at step 9
+Advancing to step 10
+Collecting data at step 10
+Advancing to step 11
+Collecting data at step 11
+Advancing to step 12
+Collecting data at step 12
+Advancing to step 13
+Collecting data at step 13
+Advancing to step 14
+Collecting data at step 14
+Advancing to step 15
+Collecting data at step 15
+Advancing to step 16
+Collecting data at step 16
+Advancing to step 17
+Collecting data at step 17
+Advancing to step 18
+Collecting data at step 18
+Advancing to step 19
+Collecting data at step 19
+Advancing to step 20
+Collecting data at step 20
+Advancing to step 21
+Collecting data at step 21
+Advancing to step 22
+Collecting data at step 22
+Advancing to step 23
+Collecting data at step 23
+Advancing to step 24
+Collecting data at step 24
+Advancing to step 25
+Collecting data at step 25
+Advancing to step 26
+Collecting data at step 26
+Advancing to step 27
+Collecting data at step 27
+Advancing to step 28
+Collecting data at step 28
+Advancing to step 29
+Collecting data at step 29
+Advancing to step 30
+Collecting data at step 30
+Advancing to step 31
+Collecting data at step 31
+Advancing to step 32
+Collecting data at step 32
+Advancing to step 33
+Collecting data at step 33
+Advancing to step 34
+Collecting data at step 34
+Advancing to step 35
+Collecting data at step 35
+Advancing to step 36
+Collecting data at step 36
+Advancing to step 37
+Collecting data at step 37
+Advancing to step 38
+Collecting data at step 38
+Advancing to step 39
+Collecting data at step 39
+Advancing to step 40
+Collecting data at step 40
+Advancing to step 41
+Collecting data at step 41
+Advancing to step 42
+Collecting data at step 42
+Advancing to step 43
+Collecting data at step 43
+Advancing to step 44
+Collecting data at step 44
+Advancing to step 45
+Collecting data at step 45
+Advancing to step 46
+Collecting data at step 46
+Advancing to step 47
+Collecting data at step 47
+Advancing to step 48
+Collecting data at step 48
+Advancing to step 49
+Collecting data at step 49
+Advancing to step 50
+Number of steps in the model: 50
+Number of rows in agent_data: 5000
+               x   y    Trait1    Trait2    Trait3  Environment Factor
+Step AgentID
+0    0        24  21  0.887372  0.458597  0.556261            0.216937
+     1        41  46  0.229383  0.065636  0.819730            0.415464
+     2         7  44  0.306214  0.149191  0.060282            0.563481
+     3        30  45  0.143022  0.106370  0.625042            0.284973
+     4         7  47  0.495177  0.672248  0.068083            0.754780
+...           ..  ..       ...       ...       ...                 ...
+49   95       24  42  0.948676  0.190749  0.097639            0.037853
+     96       38   3  0.646265  0.499912  0.373445            0.991318
+     97       13  28  0.643016  0.640111  0.790759            0.783072
+     98        4  12  0.357822  0.648100  0.601136            0.575085
+     99        3  27  0.864963  0.601766  0.624774            0.832626
+
+[5000 rows x 6 columns]
+No column 0 in the DataFrame
+No column 0 in the DataFrame
+No column 1 in the DataFrame
+No column 2 in the DataFrame
+No column 3 in the DataFrame
+No column 4 in the DataFrame
+No column 5 in the DataFrame
+No column 6 in the DataFrame
+No column 7 in the DataFrame
+No column 8 in the DataFrame
+No column 9 in the DataFrame
+No column 10 in the DataFrame
+No column 11 in the DataFrame
+No column 12 in the DataFrame
+No column 13 in the DataFrame
+No column 14 in the DataFrame
+No column 15 in the DataFrame
+No column 16 in the DataFrame
+No column 17 in the DataFrame
+No column 18 in the DataFrame
+No column 19 in the DataFrame
+No column 20 in the DataFrame
+No column 21 in the DataFrame
+No column 22 in the DataFrame
+No column 23 in the DataFrame
+No column 24 in the DataFrame
+No column 25 in the DataFrame
+No column 26 in the DataFrame
+No column 27 in the DataFrame
+No column 28 in the DataFrame
+No column 29 in the DataFrame
+No column 30 in the DataFrame
+No column 31 in the DataFrame
+No column 32 in the DataFrame
+No column 33 in the DataFrame
+No column 34 in the DataFrame
+No column 35 in the DataFrame
+No column 36 in the DataFrame
+No column 37 in the DataFrame
+No column 38 in the DataFrame
+No column 39 in the DataFrame
+No column 40 in the DataFrame
+No column 41 in the DataFrame
+No column 42 in the DataFrame
+No column 43 in the DataFrame
+No column 44 in the DataFrame
+No column 45 in the DataFrame
+No column 46 in the DataFrame
+No column 47 in the DataFrame
+No column 48 in the DataFrame
+No column 49 in the DataFrame
+No column 0 in the DataFrame
+
+<Figure size 2000x500 with 1 Axes>
+<Figure size 2000x500 with 1 Axes>
+<Figure size 2000x500 with 1 Axes>
+<Figure size 640x480 with 2 Axes>
+<Figure size 640x480 with 2 Axes>
+<Figure size 640x480 with 2 Axes>

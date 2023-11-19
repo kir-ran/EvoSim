@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>test code 1.ipynb</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #5c6370; font-style: italic;}
+.s1 { color: #d55fde; font-style: italic;}
+.s2 { color: #bbbbbb;}
+.s3 { color: #d19a66;}
+.s4 { color: #89ca78;}
+.s5 { color: #2bbac5;}
+</style>
+</head>
+<body bgcolor="#282c34">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+test code 1.ipynb</font>
+</center></td></tr></table>
+<pre><span class="s0">#%% 
+</span><span class="s1">from </span><span class="s2">mesa </span><span class="s1">import </span><span class="s2">Agent, Model</span>
+<span class="s1">from </span><span class="s2">mesa.time </span><span class="s1">import </span><span class="s2">RandomActivation</span>
+<span class="s1">from </span><span class="s2">mesa.space </span><span class="s1">import </span><span class="s2">MultiGrid</span>
+<span class="s1">from </span><span class="s2">mesa.datacollection </span><span class="s1">import </span><span class="s2">DataCollector</span>
+<span class="s1">import </span><span class="s2">numpy </span><span class="s1">as </span><span class="s2">np</span>
+<span class="s1">import </span><span class="s2">matplotlib.pyplot </span><span class="s1">as </span><span class="s2">plt</span>
+<span class="s1">from </span><span class="s2">matplotlib.animation </span><span class="s1">import </span><span class="s2">FuncAnimation</span>
+<span class="s1">import </span><span class="s2">ffmpeg</span>
+<span class="s0">#%% 
+</span><span class="s1">class </span><span class="s2">Creature(Agent):</span>
+    <span class="s1">def </span><span class="s2">__init__(self, unique_id, model, traits=</span><span class="s1">None</span><span class="s2">):</span>
+        <span class="s2">super().__init__(unique_id, model)</span>
+        <span class="s2">self.traits = traits </span><span class="s1">if </span><span class="s2">traits </span><span class="s1">is not None else </span><span class="s2">[model.random.random() </span><span class="s1">for </span><span class="s2">_ </span><span class="s1">in </span><span class="s2">range(</span><span class="s3">3</span><span class="s2">)]  </span><span class="s0"># Use random() for a single random number</span>
+        <span class="s2">self.environment_factor = model.random.uniform(</span><span class="s3">0</span><span class="s2">, </span><span class="s3">1</span><span class="s2">)</span>
+
+    <span class="s1">def </span><span class="s2">step(self):</span>
+        <span class="s0"># Example: Simple evolutionary process with environmental influence</span>
+        <span class="s2">neighbors = self.model.grid.get_neighbors(self.pos, moore=</span><span class="s1">True</span><span class="s2">, include_center=</span><span class="s1">False</span><span class="s2">)</span>
+        <span class="s2">neighbor_traits = [neighbor.traits </span><span class="s1">for </span><span class="s2">neighbor </span><span class="s1">in </span><span class="s2">neighbors]</span>
+
+        <span class="s0"># Calculate average trait values of neighbors</span>
+        <span class="s2">avg_neighbor_traits = np.mean(neighbor_traits, axis=</span><span class="s3">0</span><span class="s2">) </span><span class="s1">if </span><span class="s2">neighbors </span><span class="s1">else </span><span class="s2">self.traits</span>
+
+        <span class="s0"># Calculate the difference between own traits and average neighbor traits</span>
+        <span class="s2">trait_difference = np.array(avg_neighbor_traits) - np.array(self.traits)</span>
+
+        <span class="s0"># Update traits based on a small fraction of the trait difference and environmental factor</span>
+        <span class="s0"># print(f&quot;Updating traits at step {self.model.schedule.steps}&quot;)</span>
+        <span class="s2">self.traits += </span><span class="s3">0.1 </span><span class="s2">* trait_difference * self.environment_factor</span>
+<span class="s0">#%% 
+</span><span class="s1">class </span><span class="s2">EvolutionModel(Model):</span>
+    <span class="s1">def </span><span class="s2">__init__(self, N, width, height):</span>
+        <span class="s2">self.num_agents = N</span>
+        <span class="s2">self.grid = MultiGrid(width, height, </span><span class="s1">True</span><span class="s2">)</span>
+        <span class="s2">self.schedule = RandomActivation(self)</span>
+    
+        <span class="s0"># Create agents with random initial traits</span>
+        <span class="s1">for </span><span class="s2">i </span><span class="s1">in </span><span class="s2">range(self.num_agents):</span>
+            <span class="s2">agent = Creature(i, self)</span>
+            <span class="s2">x = np.random.choice(self.grid.width)</span>
+            <span class="s2">y = np.random.choice(self.grid.height)</span>
+            <span class="s2">self.grid.place_agent(agent, (x, y))</span>
+            <span class="s2">self.schedule.add(agent)</span>
+
+        <span class="s0"># DataCollector to track traits and environmental factors over time</span>
+        <span class="s2">self.datacollector = DataCollector(agent_reporters={</span><span class="s4">&quot;x&quot;</span><span class="s2">: </span><span class="s1">lambda </span><span class="s2">a: a.pos[</span><span class="s3">0</span><span class="s2">], </span>
+                                                            <span class="s4">&quot;y&quot;</span><span class="s2">: </span><span class="s1">lambda </span><span class="s2">a: a.pos[</span><span class="s3">1</span><span class="s2">], </span>
+                                                            <span class="s4">&quot;Trait1&quot;</span><span class="s2">: </span><span class="s1">lambda </span><span class="s2">a: a.traits[</span><span class="s3">0</span><span class="s2">], </span>
+                                                            <span class="s4">&quot;Trait2&quot;</span><span class="s2">: </span><span class="s1">lambda </span><span class="s2">a: a.traits[</span><span class="s3">1</span><span class="s2">], </span>
+                                                            <span class="s4">&quot;Trait3&quot;</span><span class="s2">: </span><span class="s1">lambda </span><span class="s2">a: a.traits[</span><span class="s3">2</span><span class="s2">], </span>
+                                                            <span class="s4">&quot;Environment Factor&quot;</span><span class="s2">: </span><span class="s4">&quot;environment_factor&quot;</span><span class="s2">})</span>
+
+    <span class="s1">def </span><span class="s2">step(self):</span>
+       <span class="s0"># print(f&quot;Collecting data at step {self.schedule.steps}&quot;)</span>
+       <span class="s2">self.datacollector.collect(self)</span>
+       <span class="s0"># print(f&quot;Advancing to step {self.schedule.steps + 1}&quot;)</span>
+       <span class="s2">self.schedule.step()</span>
+<span class="s0">#%% 
+# Run the model for a certain number of steps</span>
+<span class="s2">N_steps = </span><span class="s3">555 </span><span class="s0"># Increase this to get a longer time series</span>
+<span class="s2">N_agents = </span><span class="s3">1000</span>
+<span class="s2">width = </span><span class="s3">50</span>
+<span class="s2">height = </span><span class="s3">50</span>
+<span class="s2">model = EvolutionModel(N_agents, width, height)</span>
+<span class="s1">for </span><span class="s2">i </span><span class="s1">in </span><span class="s2">range(N_steps):</span>
+    <span class="s2">model.step()</span>
+<span class="s0"># print(f&quot;Number of steps in the model: {model.schedule.steps}&quot;)</span>
+<span class="s0"># Extract and visualize data collected during the simulation</span>
+<span class="s2">agent_data = model.datacollector.get_agent_vars_dataframe()</span>
+<span class="s0"># print(f&quot;Number of rows in agent_data: {len(agent_data)}&quot;)</span>
+<span class="s0"># print(agent_data)</span>
+<span class="s0"># Get data for the last step</span>
+<span class="s2">last_step_data = agent_data.xs(N_steps-</span><span class="s3">1</span><span class="s2">, level=</span><span class="s4">&quot;Step&quot;</span><span class="s2">)</span>
+
+<span class="s0"># Unstack the data for plotting</span>
+<span class="s2">unstacked_data = last_step_data.unstack()</span>
+<span class="s0">#%% 
+# Plot each trait separately</span>
+<span class="s1">for </span><span class="s2">trait </span><span class="s1">in </span><span class="s2">[</span><span class="s4">&quot;Trait1&quot;</span><span class="s2">, </span><span class="s4">&quot;Trait2&quot;</span><span class="s2">, </span><span class="s4">&quot;Trait3&quot;</span><span class="s2">]:</span>
+    <span class="s2">plt.figure(figsize=(</span><span class="s3">20</span><span class="s2">, </span><span class="s3">5</span><span class="s2">))</span>
+    <span class="s2">unstacked_data[trait].plot()</span>
+    <span class="s2">plt.xlabel(</span><span class="s4">'Step'</span><span class="s2">)</span>
+    <span class="s2">plt.ylabel(trait)</span>
+    <span class="s2">plt.title(</span><span class="s4">'Evolution Simulation'</span><span class="s2">)</span>
+    <span class="s0"># plt.show()</span>
+<span class="s0">#%% 
+# Visualize the spatial distribution of traits and environmental factors in the last step</span>
+<span class="s1">for </span><span class="s2">trait </span><span class="s1">in </span><span class="s2">[</span><span class="s4">&quot;Trait1&quot;</span><span class="s2">, </span><span class="s4">&quot;Trait2&quot;</span><span class="s2">, </span><span class="s4">&quot;Trait3&quot;</span><span class="s2">]:</span>
+    <span class="s2">fig, ax = plt.subplots()</span>
+    <span class="s2">sc = ax.scatter(last_step_data[</span><span class="s4">&quot;x&quot;</span><span class="s2">], last_step_data[</span><span class="s4">&quot;y&quot;</span><span class="s2">],c=last_step_data[trait].values * last_step_data[</span><span class="s4">&quot;Environment Factor&quot;</span><span class="s2">].values,cmap=</span><span class="s4">'viridis'</span><span class="s2">)</span>
+    <span class="s2">plt.colorbar(sc, label=</span><span class="s4">f'</span><span class="s5">{</span><span class="s2">trait</span><span class="s5">} </span><span class="s4">* Environment Factor'</span><span class="s2">)</span>
+    <span class="s2">plt.xlabel(</span><span class="s4">'X'</span><span class="s2">)</span>
+    <span class="s2">plt.ylabel(</span><span class="s4">'Y'</span><span class="s2">)</span>
+    <span class="s2">plt.title(</span><span class="s4">f'Spatial Distribution of </span><span class="s5">{</span><span class="s2">trait</span><span class="s5">} </span><span class="s4">* Environment Factor'</span><span class="s2">)</span>
+    <span class="s2">plt.show()</span>
+<span class="s0">#%% 
+# Function to update the plot</span>
+<span class="s2">fig, ax = plt.subplots()</span>
+<span class="s1">def </span><span class="s2">update(i):</span>
+    <span class="s2">print(i)</span>
+    <span class="s2">fig.clear()</span>
+    <span class="s2">step_data = agent_data.xs(i, level=</span><span class="s4">&quot;Step&quot;</span><span class="s2">)</span>
+    <span class="s0"># print(f&quot;Plotting data for step {i}&quot;)</span>
+    <span class="s0"># print(step_data)</span>
+    <span class="s0"># print(f&quot;Number of rows in step_data: {len(step_data)}&quot;)</span>
+    <span class="s0"># print(f&quot;Number of unique agents in step_data: {len(step_data.index.unique())}&quot;)</span>
+    <span class="s0"># print(f&quot;Number of unique x values in step_data: {len(step_data.x)}&quot;)</span>
+    <span class="s0"># print(f&quot;Number of unique y values in step_data: {len(step_data.y)}&quot;)</span>
+    <span class="s0"># print(f&quot;Number of unique Trait1 values in step_data: {len(step_data.Trait1)}&quot;)</span>
+    <span class="s0"># print(f&quot;Number of unique Trait2 values in step_data: {len(step_data.Trait2)}&quot;)</span>
+    <span class="s0"># print(f&quot;Number of unique Trait3 values in step_data: {len(step_data.Trait3)}&quot;) </span>
+    <span class="s0"># print(f&quot;Number of unique Environment Factor values in step_data: {len(step_data['Environment Factor'].unique())}&quot;)</span>
+    <span class="s2">ax = fig.add_subplot(</span><span class="s3">111</span><span class="s2">)</span>
+    <span class="s2">sc_local = ax.scatter(step_data[</span><span class="s4">&quot;x&quot;</span><span class="s2">], step_data[</span><span class="s4">&quot;y&quot;</span><span class="s2">], c=step_data[</span><span class="s4">f&quot;Trait3&quot;</span><span class="s2">].values * step_data[</span><span class="s4">&quot;Environment Factor&quot;</span><span class="s2">].values, cmap=</span><span class="s4">'viridis'</span><span class="s2">)</span>
+    <span class="s2">plt.xlabel(</span><span class="s4">'X'</span><span class="s2">)</span>
+    <span class="s2">plt.ylabel(</span><span class="s4">'Y'</span><span class="s2">)</span>
+    <span class="s2">plt.title(</span><span class="s4">f'Spatial Distribution Step </span><span class="s5">{</span><span class="s2">i</span><span class="s5">} </span><span class="s4">trait 3'</span><span class="s2">)</span>
+    <span class="s2">sc_local.set_offsets(np.column_stack((step_data[</span><span class="s4">&quot;y&quot;</span><span class="s2">], step_data[</span><span class="s4">&quot;x&quot;</span><span class="s2">])))</span>
+    <span class="s2">cbar = fig.colorbar(sc_local, ax=ax, label = </span><span class="s4">f'Trait 3 * Environment Factor'</span><span class="s2">)</span>
+    
+    
+<span class="s0">#%% 
+# Create an animation</span>
+<span class="s2">ani = FuncAnimation(fig, update, frames = N_steps, repeat=</span><span class="s1">True</span><span class="s2">)</span>
+
+<span class="s0"># Save the animation as a video file</span>
+<span class="s2">ani.save(</span><span class="s4">'trait3.mp4'</span><span class="s2">, writer=</span><span class="s4">'ffmpeg'</span><span class="s2">)</span>
+<span class="s0">#%% 
+</span></pre>
+</body>
+</html>
